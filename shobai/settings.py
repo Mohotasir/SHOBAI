@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,6 +43,9 @@ INSTALLED_APPS = [
     "tailwind",
     "theme",
     "django_browser_reload",
+
+    #apps
+    "apps.products",
 ]
 
 MIDDLEWARE = [
