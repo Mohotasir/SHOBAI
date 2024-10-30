@@ -11,6 +11,7 @@ urlpatterns = [
     # == Include the app's URLs ===
     # For development only
     path("__reload__/", include("django_browser_reload.urls")),
+    path('products/',include('apps.products.urls'))
 ]
 
 if settings.DEBUG:
