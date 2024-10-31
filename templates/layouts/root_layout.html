@@ -1,0 +1,12 @@
+{% extends "layouts/base.html" %}
+
+{% block body %}
+   <section class="p-3 grid grid-cols-[20rem,1fr] flex-1">
+      {% include "snippets/sidebar.html" %}
+
+      {% block slot %}
+         <main class="p-6 col-start-2 col-span-1 bg-white flex-1 rounded-lg shadow-card">
+         </main>
+      {% endblock slot %}
+   </section>
+{% endblock body %}
