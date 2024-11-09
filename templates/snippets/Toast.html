@@ -1,0 +1,23 @@
+{% if messages %}
+   <div id="toast-container"
+        class="fixed inset-x-4 top-4 z-[9999] flex flex-col items-center gap-y-2 text-foreground">
+      {% for message in messages %}
+         <div class="max-w-80 px-2.5 py-2 rounded-lg bg-popover text-popover-foreground shadow-toast border border-gray-100 will-change-transform flex items-center gap-x-2 animate-toast-appear">
+            {% if message.tags == "success" %}
+               <div class="size-5 opacity-0 rounded-full bg-green-500 relative animate-toast-circle rotate-45 after:absolute after:h-2.5 after:w-1.5 after:bottom-1.5 after:left-1.5 after:border-r-2 after:border-b-2 after:border-white after:animate-toast-tick flex-shrink-0">
+               </div>
+            {% elif message.tags == "error" %}
+               <div class="size-5 opacity-0 rounded-full bg-red-500 relative animate-toast-circle rotate-45 before:opacity-0 before:h-0.5 before:w-3 before:rounded-sm before:bg-white before:absolute before:left-1 before:bottom-[9px] before:rotate-90 before:animate-toast-x-before after:opacity-0 after:h-0.5 after:w-3 after:rounded-sm after:bg-white after:absolute after:left-1 after:bottom-[9px] after:animate-toast-x-after flex-shrink-0">
+               </div>
+            {% endif %}
+            <p>{{ message }}</p>
+         </div>
+      {% endfor %}
+   </div>
+   <script>
+   setTimeout(function () {
+      var messageContainer = document.getElementById("toast-container");
+      if (messageContainer) messageContainer.style.opacity = "0";
+   }, 5000);
+   </script>
+{% endif %}

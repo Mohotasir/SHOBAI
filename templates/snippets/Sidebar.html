@@ -1,0 +1,60 @@
+{% load static %}
+<aside class="py-10 fixed left-0 inset-y-0 w-80 h-screen flex flex-col z-10 text-gray-800 gap-y-10">
+   <div class="px-10">{% include "snippets/Logo.html" %}</div>
+
+   <ul class="px-7 grid text-lg font-semibold">
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/Home.html" %}
+            <span class="block ml-5 mr-4">Home</span>
+         </a>
+      </li>
+
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/User.html" %}
+            <span class="block ml-5 mr-4">Profile</span>
+         </a>
+      </li>
+
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/Bell.html" %}
+            <p class="ml-5 mr-4 inline-flex items-center gap-x-2">
+               <span>Notifications</span>
+               {% comment %} <span class="px-2 py-1 inline-flex items-center justify-center min-w-8 rounded-full bg-white/75 text-muted-foreground leading-none text-sm">0</span> {% endcomment %}
+            </p>
+         </a>
+      </li>
+
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/ShoppingCart.html" %}
+            <p class="ml-5 mr-4 inline-flex items-center gap-x-2">
+               <span>Cart</span>
+               <span class="px-2 py-1 inline-flex items-center justify-center min-w-8 rounded-full bg-white/75 text-muted-foreground leading-none text-sm">0</span>
+            </p>
+         </a>
+      </li>
+
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/Shop.html" %}
+            <span class="block ml-5 mr-4">Following</span>
+         </a>
+      </li>
+
+      <li>
+         <a href="{% url 'home' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/Wishlist.html" %}
+            <span class="block ml-5 mr-4">Wishlist</span>
+         </a>
+      </li>
+   </ul>
+</aside>
