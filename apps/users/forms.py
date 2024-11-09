@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.password_validation import password_validators_help_texts
+from .models import MerchantApplication
 
 User = get_user_model()
 
@@ -121,3 +122,66 @@ class UserSignInForm(forms.Form):
         required=True,
         error_messages={"required": "Password is required."},
     )
+
+
+class BecomeMerchantForm(forms.ModelForm):
+    photo = forms.FileField(
+        label="Photo",
+        widget=forms.FileInput(
+            attrs={
+                "class": "absolute inset-0 appearance-none opacity-0 outline-none focus:outline-none focus:ring-0",
+                "accept": "image/*",
+                "onchange": "showImage(event)",
+            }
+        ),
+        required=True,
+        error_messages={"required": "Photo is required."},
+    )
+
+    nid = forms.CharField(
+        label="NID",
+        widget=forms.TextInput(
+            attrs={
+                "class": "input w-full",
+                "placeholder": "Enter your NID",
+                "autocomplete": "off",
+            }
+        ),
+        required=True,
+        error_messages={"required": "NID is required."},
+    )
+
+    contact = forms.CharField(
+        label="Phone Number",
+        widget=forms.TextInput(
+            attrs={
+                "class": "input w-full",
+                "placeholder": "Enter your phone number",
+                "autocomplete": "phone",
+            }
+        ),
+        required=True,
+        error_messages={"required": "Phone number is required."},
+    )
+
+    email = forms.EmailField(
+        label="Business Email",
+        widget=forms.EmailInput(
+            attrs={
+                "class": "input w-full",
+                "placeholder": "Enter your business email",
+                "autocomplete": "email",
+            }
+        ),
+        required=True,
+        error_messages={"required": "Business email is required."},
+    )
+
+    class Meta:
+        model = MerchantApplication
+        fields = ["nid", "photo", "email", "contact"]
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        validate_email(email)
+        return email

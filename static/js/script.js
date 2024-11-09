@@ -25,3 +25,18 @@ function ShowUserMenu(element) {
       }
    }
 }
+
+function showImage(e) {
+   const imageInput = event.target;
+   const preview = document.getElementById("image-preview");
+   const file = imageInput.files[0];
+
+   if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+         preview.src = e.target.result;
+         preview.classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+   }
+}
