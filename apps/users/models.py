@@ -88,3 +88,38 @@ class MerchantApplication(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.status}"
+
+
+# ===================================
+# Address Model
+# ===================================
+class Zone(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class Area(models.Model):
+    name = models.CharField(max_length=100)
+    district = models.ForeignKey(Zone, related_name="thanas", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.district.name} - {self.name}"
+
+
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
+    label = models.CharField(max_length=100)
+    address = models.TextField()
+    area = models.CharField(max_length=100)
+    zone = models.CharField(max_length=100)
+    contact = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = "addresses"
+        verbose_name = "Address"
+        verbose_name_plural = "Addresses"
+
+    def __str__(self):
+        return f"{self.label} - {self.user.name}"

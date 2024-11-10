@@ -1,7 +1,10 @@
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as signIn, logout as signOut
+from .models import Zone
+
 from .forms import UserRegistrationForm, UserSignInForm, BecomeMerchantForm
 
 
@@ -82,3 +85,33 @@ def become_merchant(request):
         form = BecomeMerchantForm()
 
     return render(request, "become_merchant.html", {"form": form})
+
+
+@login_required
+def address_book(request):
+    """
+    This view handles the address book of a user.
+    """
+    user = request.user
+    addresses = user.addresses.all()
+    return render(request, "address_book.html", {"addresses": addresses})
+
+
+def zones(request):
+    zones = Zone.objects.all()
+    zones_data = [{"id": zone.pk, "name": zone.name} for zone in zones]
+    return JsonResponse({"data": zones_data})
+
+
+def areas(request):
+    zone_id = request.GET.get("zone")
+    if zone_id:
+        try:
+            zone = Zone.objects.get(pk=zone_id)
+            areas = zone.thanas.all()
+            areas_data = [{"id": area.pk, "name": area.name} for area in areas]
+            return JsonResponse({"zone": zone.name, "areas": areas_data})
+        except Zone.DoesNotExist:
+            return JsonResponse({"error": "Zone not found"}, status=404)
+    else:
+        return JsonResponse({"error": "Zone ID not provided"}, status=400)
