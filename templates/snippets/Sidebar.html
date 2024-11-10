@@ -81,7 +81,7 @@
             <ul id="account-details-menu"
                 class="hidden p-2 absolute inset-x-0 bottom-[calc(100%+0.5rem)] bg-white rounded-lg shadow-card origin-bottom animate-scale-in">
                <li>
-                  <a href="{% url 'become-merchant' %}"
+                  <a href="{% url 'address-book' %}"
                      class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
                      <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/Address.html" %}</div>
                      <span>Address Book</span>
@@ -91,9 +91,7 @@
                <li>
                   <a href="{% url 'become-merchant' %}"
                      class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
-                     <div class="size-9 flex-center bg-gray-100 rounded-full">
-                        {% include "icons/MerchantShop.html" %}
-                     </div>
+                     <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/MerchantShop.html" %}</div>
                      <span>Become a merchant</span>
                   </a>
                </li>
@@ -107,13 +105,13 @@
                </li>
             </ul>
          </div>
-      {% comment %} {% else %}
+      {% else %}
          <div class="flex items-center gap-x-3">
             <a href="{% url 'login' %}"
                class="px-4 py-2 w-full bg-primary text-primary-foreground rounded-full flex-center border border-primary">Log in</a>
             <a href="{% url 'register' %}"
                class="px-4 py-2 w-full bg-white text-muted-foreground rounded-full flex-center border border-orange-100">Register</a>
-         </div> {% endcomment %}
+         </div>
       {% endif %}
    </div>
 </aside>
