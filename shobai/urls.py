@@ -12,6 +12,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # == Include the app's URLs ===
     path("", include("apps.users.urls")),
+    path("", include("apps.stores.urls")),
     # For development only
     path("__reload__/", include("django_browser_reload.urls")),
 ]
