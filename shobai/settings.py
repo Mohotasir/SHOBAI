@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "django_browser_reload",
     # Project apps
     "apps.users",
+    "apps.stores",
     "apps.products",
     # Allauth apps
     "allauth",
