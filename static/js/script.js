@@ -10,8 +10,25 @@ function togglePasswordVisibility(element) {
    passwordInput.type = isPasswordVisible ? "password" : "text";
 }
 
-function ShowUserMenu(element) {
-   const menu = document.getElementById("account-details-menu");
+function ShowDropdownMenu(element) {
+   const menu = element.parentElement.querySelector(".dropdown-menu");
+
+   const isHidden = menu.classList.toggle("hidden");
+
+   !isHidden
+      ? document.addEventListener("click", hideOnClickOutside)
+      : document.removeEventListener("click", hideOnClickOutside);
+
+   function hideOnClickOutside(event) {
+      if (!element.contains(event.target) && !menu.contains(event.target)) {
+         menu.classList.add("hidden");
+         document.removeEventListener("click", hideOnClickOutside);
+      }
+   }
+}
+
+function ShowFilter(element) {
+   const menu = document.getElementById("filter-menu");
    const isHidden = menu.classList.toggle("hidden");
 
    !isHidden

@@ -9,4 +9,7 @@ urlpatterns = [
     path("address-book", views.address_book, name="address-book"),
     path("zones", views.zones, name="get-zones"),
     path("areas", views.areas, name="get-areas"),
+    # Admin views
+    path("manage-users", views.manage_user, name="manage-users"),
+    path("users/<int:id>/update-role", views.update_role, name="update-role"),
 ]
