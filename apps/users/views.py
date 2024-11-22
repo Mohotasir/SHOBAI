@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as signIn, logout as signOut
-from .models import Zone
-
+from django.db.models import Q
+from .models import User, Zone
 from .forms import UserRegistrationForm, UserSignInForm, BecomeMerchantForm
+from .decorators import role_required
 
 
 def register(request):
@@ -115,3 +116,37 @@ def areas(request):
             return JsonResponse({"error": "Zone not found"}, status=404)
     else:
         return JsonResponse({"error": "Zone ID not provided"}, status=400)
+
+
+@role_required(["ADMIN"])
+def manage_user(request):
+    role = request.GET.get("role", "all")
+    query = request.GET.get("q", "")
+
+    # Filter users based on role except superusers
+    if role == "all":
+        users = User.objects.filter(is_superuser=False)
+    else:
+        users = User.objects.filter(role=role.upper(), is_superuser=False)
+
+    # Apply search filter if query exists
+    if query:
+        users = users.filter(Q(name__icontains=query) | Q(email__icontains=query))
+
+    return render(request, "manage-users.html", {"users": users})
+
+
+@role_required(["ADMIN"])
+def update_role(request, id):
+    role = request.GET.get("role", "").lower()
+
+    if not role or role not in ("admin", "user"):
+        return redirect("manage-users")
+
+    try:
+        user = User.objects.get(pk=id)
+        user.role = role.upper()
+        user.save(update_fields=["role"])
+        return redirect("manage-users")
+    except User.DoesNotExist:
+        return redirect("manage-users")

@@ -8,6 +8,7 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.homepage, name="home"),
+    path("dashboard/", views.dashboard, name="dashboard"),
     # Include allauth URLs
     path("accounts/", include("allauth.urls")),
     # == Include the app's URLs ===
