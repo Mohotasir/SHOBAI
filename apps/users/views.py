@@ -73,6 +73,12 @@ def become_merchant(request):
     """
     This view handles the request to become a merchant.
     """
+    # Get previous applications with all needed info in one query
+    previous_applications = MerchantApplication.objects.filter(user=request.user).order_by(
+        "-date_applied"
+    )
+
+    # Handle form submission
     if request.method == "POST":
         form = BecomeMerchantForm(request.POST, request.FILES)
         if form.is_valid():
@@ -81,13 +87,21 @@ def become_merchant(request):
             application.save()
             messages.success(request, "Successfully submitted!")
             return redirect("home")
-        else:
-            print(form.errors)
-
+        # Remove print statement since it's not useful in production
     else:
         form = BecomeMerchantForm()
 
-    return render(request, "become_merchant.html", {"form": form})
+    return render(
+        request,
+        "become_merchant.html",
+        {
+            "form": form,
+            "submission_count": previous_applications.count(),
+            "previous_applications": previous_applications,
+            "has_approved": previous_applications.filter(status="APPROVED").exists(),
+            "has_pending": previous_applications.filter(status="PENDING").exists(),
+        },
+    )
 
 
 @login_required
@@ -143,6 +157,24 @@ def manage_merchant_applications(request):
         )
 
     return render(request, "merchant-applications.html", {"applications": applications})
+
+
+@role_required(["ADMIN"])
+def update_application_status(request, id):
+    status = request.GET.get("status", "").upper()
+    if status not in ["PENDING", "APPROVED", "REJECTED"]:
+        return redirect("merchant-applications")
+
+    application = MerchantApplication.objects.get(pk=id)
+    application.status = status
+
+    # If approved, update user role to merchant
+    if status == "APPROVED":
+        application.user.role = "MERCHANT"
+        application.user.save(update_fields=["role"])
+
+    application.save()
+    return redirect("merchant-applications")
 
 
 @role_required(["ADMIN"])
