@@ -18,12 +18,20 @@
             <span class="block ml-5 mr-4">Manage Users</span>
          </a>
       </li>
+
+      <li>
+         <a href="{% url 'merchant-applications' %}"
+            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
+            {% include "icons/MerchantRequests.html" %}
+            <span class="block ml-5 mr-4">Merchant Requests</span>
+         </a>
+      </li>
    </ul>
 
    <div class="px-7 mt-auto">
       {% if user.is_authenticated %}
          <div class="relative p-3 flex items-center gap-x-3 rounded-xl bg-white shadow-card w-full">
-            <img src="media/{{ user.image }}"
+            <img src="{{ user.image.url }}"
                  width="40"
                  height="40"
                  alt="Profile Picture"

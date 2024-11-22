@@ -61,7 +61,7 @@
    <div class="px-7 mt-auto">
       {% if user.is_authenticated %}
          <div class="relative p-3 flex items-center gap-x-3 rounded-xl bg-white shadow-card w-full">
-            <img src="media/{{ user.image }}"
+            <img src="{{ user.image.url }}"
                  width="40"
                  height="40"
                  alt="Profile Picture"

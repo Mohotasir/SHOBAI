@@ -1,0 +1,80 @@
+{% extends "layouts/dashboard_layout.html" %}
+
+{% block slot %}
+   <header class="space-y-3">
+      <h2 class="text-foreground text-xl font-bold leading-tight">Merchant Applications</h2>
+      <p>Review and manage merchant applications awaiting approval.</p>
+   </header>
+
+   <section class="mt-10 grid gap-6 grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] text-sm">
+      <header class="flex items-center justify-between">
+         <div class="flex items-center p-1 rounded-lg bg-gray-100 gap-x-1 font-semibold">
+            <a href="{% url 'merchant-applications' %}"
+               class="px-3 py-1 rounded-md {% if request.GET.status == 'all' or not request.GET.status %}bg-white text-foreground{% endif %} hover:bg-gray-200">All</a>
+            <a href="{% url 'merchant-applications' %}?status=approved"
+               class="px-3 py-1 rounded-md {% if request.GET.status == 'approved' %}bg-white text-foreground{% endif %} hover:bg-gray-200">Approved</a>
+            <a href="{% url 'merchant-applications' %}?status=pending"
+               class="px-3 py-1 rounded-md {% if request.GET.status == 'pending' %}bg-white text-foreground{% endif %} hover:bg-gray-200">Pending</a>
+            <a href="{% url 'merchant-applications' %}?status=rejected"
+               class="px-3 py-1 rounded-md {% if request.GET.status == 'rejected' %}bg-white text-foreground{% endif %} hover:bg-gray-200">Rejected</a>
+         </div>
+
+         <div class="flex justify-end gap-x-3 text-sm max-w-96 w-full">
+            <form method="get"
+                  action="{% url 'merchant-applications' %}"
+                  class="w-full">
+               <input type="text"
+                      name="q"
+                      autocomplete="off"
+                      value="{{ request.GET.q }}"
+                      placeholder="Search for merchant details"
+                      class="w-full h-10 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 rounded-md" />
+            </form>
+         </div>
+      </header>
+   </section>
+
+   <main class="mt-10 space-y-10">
+      <table class="w-full text-gray-800">
+         <thead>
+            <tr class="bg-gray-100 rounded-sm">
+               <th class="pl-3 py-3 font-semibold text-foreground text-left">Merchant Details</th>
+               <th class="py-3 w-72 font-semibold text-foreground">NID</th>
+               <th class="py-3 w-72 font-semibold text-foreground">Status</th>
+               <th class="pr-3 w-32 py-3 font-semibold text-foreground">
+                  <span class="sr-only">Action</span>
+               </th>
+            </tr>
+         </thead>
+
+         <tbody>
+            {% for application in applications %}
+               <tr>
+                  <td class="pl-3 py-3">
+                     <h4 class="font-semibold">{{ application.user.name }}</h4>
+                     <p class="text-sm text-muted-foreground">{{ application.user.email }}</p>
+                  </td>
+                  <td class="text-center">{{ application.nid }}</td>
+                  <td class="text-center">
+                     <div class="inline-flex items-center gap-x-2">
+                        {% if application.status == "APPROVED" %}
+                           <span class="size-1.5 rounded-full flex-shrink-0 bg-green-500"></span>
+                        {% elif application.status == "PENDING" %}
+                           <span class="size-1.5 rounded-full flex-shrink-0 bg-amber-500"></span>
+                        {% else %}
+                           <span class="size-1.5 rounded-full flex-shrink-0 bg-rose-500"></span>
+                        {% endif %}
+                        <span class="lowercase first-letter:uppercase">{{ application.status }}</span>
+                     </div>
+                  </td>
+                  <td class="pr-3 text-right">
+                     <button class="size-9 inline-flex items-center justify-center active:scale-75 transition-transform bg-gray-50 rounded-full">
+                        {% include "icons/Menu.html" %}
+                     </button>
+                  </td>
+               </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   </main>
+{% endblock slot %}

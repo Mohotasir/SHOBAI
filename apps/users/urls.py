@@ -12,4 +12,5 @@ urlpatterns = [
     # Admin views
     path("manage-users", views.manage_user, name="manage-users"),
     path("users/<int:id>/update-role", views.update_role, name="update-role"),
+    path("merchant-applications", views.manage_merchant_applications, name="merchant-applications"),
 ]

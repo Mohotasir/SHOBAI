@@ -4,11 +4,12 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as signIn, logout as signOut
 from django.db.models import Q
-from .models import User, Zone
+from .decorators import redirect_authenticated_user, role_required
+from .models import User, Zone, MerchantApplication
 from .forms import UserRegistrationForm, UserSignInForm, BecomeMerchantForm
-from .decorators import role_required
 
 
+@redirect_authenticated_user
 def register(request):
     """
     This view handles the registration of a new user.
@@ -35,6 +36,7 @@ def register(request):
     return render(request, "register.html", {"form": form})
 
 
+@redirect_authenticated_user
 def login(request):
     """
     This view handles the login of a user.
@@ -116,6 +118,31 @@ def areas(request):
             return JsonResponse({"error": "Zone not found"}, status=404)
     else:
         return JsonResponse({"error": "Zone ID not provided"}, status=400)
+
+
+@role_required(["ADMIN"])
+def manage_merchant_applications(request):
+    """
+    This view allows the admin to manage merchant requests.
+    """
+    status = request.GET.get("status", "all")
+    query = request.GET.get("q", "")
+
+    # Filter applications based on status
+    if status == "all":
+        applications = MerchantApplication.objects.all()
+    else:
+        applications = MerchantApplication.objects.filter(status=status.upper())
+
+    # Apply search filter if query exists
+    if query:
+        applications = applications.filter(
+            Q(user__name__icontains=query)
+            | Q(user__email__icontains=query)
+            | Q(nid__icontains=query)
+        )
+
+    return render(request, "merchant-applications.html", {"applications": applications})
 
 
 @role_required(["ADMIN"])
