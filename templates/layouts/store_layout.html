@@ -40,9 +40,15 @@
                      </div>
                   </div>
 
-                  <form method="post">
+                  <form method="post" action="{% url 'toggle-follow-store' store.slug %}">
                      {% csrf_token %}
-                     <button class="font-semibold bg-primary text-lg text-white px-5 py-2 rounded-full">Follow</button>
+                     <button class="font-semibold {% if is_following %}bg-gray-200 text-gray-900{% else %}bg-primary text-white{% endif %} text-lg px-5 py-2 rounded-full">
+                        {% if is_following %}
+                           Following
+                        {% else %}
+                           Follow
+                        {% endif %}
+                     </button>
                   </form>
                </div>
             </div>
