@@ -51,7 +51,7 @@ def login(request):
             if user is not None:
                 signIn(request, user)
                 messages.success(request, "Successfully logged in!")
-                return redirect("home")
+                return redirect("dashboard" if request.user.role == "ADMIN" else "home")
             else:
                 messages.error(request, "Invalid email or password.")
     else:
@@ -87,7 +87,6 @@ def become_merchant(request):
             application.save()
             messages.success(request, "Successfully submitted!")
             return redirect("home")
-        # Remove print statement since it's not useful in production
     else:
         form = BecomeMerchantForm()
 

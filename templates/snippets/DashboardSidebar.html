@@ -1,31 +1,18 @@
 {% load static %}
 <aside class="py-10 fixed left-0 inset-y-0 w-80 h-screen flex flex-col z-10 text-gray-800 gap-y-10">
-   <div class="px-10">{% include "snippets/Logo.html" %}</div>
+   <div class="px-10">
+      <a href="{% url 'home' %}">{% include "snippets/Logo.html" %}</a>
+   </div>
 
    <ul class="px-7 grid text-lg font-semibold">
-      <li>
-         <a href="{% url 'dashboard' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/DashboardBlocks.html" %}
-            <span class="block ml-5 mr-4">Dashboard</span>
-         </a>
-      </li>
-
-      <li>
-         <a href="{% url 'manage-users' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/User.html" %}
-            <span class="block ml-5 mr-4">Manage Users</span>
-         </a>
-      </li>
-
-      <li>
-         <a href="{% url 'merchant-applications' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/MerchantRequests.html" %}
-            <span class="block ml-5 mr-4">Merchant Requests</span>
-         </a>
-      </li>
+      {% include "snippets/SidebarItem.html" with path="dashboard" icon="icons/DashboardBlocks.html" label="Dashboard" %}
+      {% if user.role == 'ADMIN' %}
+         {% include "snippets/SidebarItem.html" with path="manage-users" icon="icons/User.html" label="Manage Users" %}
+         {% include "snippets/SidebarItem.html" with path="merchant-applications" icon="icons/MerchantRequests.html" label="Merchant Requests" %}
+      {% elif user.role == 'MERCHANT' %}
+         {% include "snippets/SidebarItem.html" with path="manage-inventory" icon="icons/DashboardBlocks.html" label="Manage Inventory" %}
+         {% include "snippets/SidebarItem.html" with path="manage-orders" icon="icons/DashboardBlocks.html" label="Manage Orders" %}
+      {% endif %}
    </ul>
 
    <div class="px-7 mt-auto">

@@ -22,6 +22,8 @@ def role_required(allowed_roles, redirect_url="dashboard"):
             if not request.user.is_authenticated:
                 return redirect("login")
             if request.user.role not in allowed_roles:
+                if redirect_url == "CURRENT":
+                    return redirect(request.META.get("HTTP_REFERER"))
                 return redirect(redirect_url)
             return view_func(request, *args, **kwargs)
 

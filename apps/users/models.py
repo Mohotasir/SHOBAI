@@ -45,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"{self.name} - {self.email}"
+        return f"{self.name.split(' ')[0]}"
 
     def has_perm(self, perm, obj=None):
         if self.is_superuser:

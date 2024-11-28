@@ -1,35 +1,12 @@
 {% load static %}
 <aside class="py-10 fixed left-0 inset-y-0 w-80 h-screen flex flex-col z-10 text-gray-800 gap-y-10">
-   <div class="px-10">{% include "snippets/Logo.html" %}</div>
+   <div class="px-10">
+      <a href="{% url 'home' %}">{% include "snippets/Logo.html" %}</a>
+   </div>
 
    <ul class="px-7 grid text-lg font-semibold">
-      <li>
-         <a href="{% url 'home' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/Home.html" %}
-            <span class="block ml-5 mr-4">Home</span>
-         </a>
-      </li>
-
-      <li>
-         <a href="{% url 'home' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/User.html" %}
-            <span class="block ml-5 mr-4">Profile</span>
-         </a>
-      </li>
-
-      <li>
-         <a href="{% url 'home' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/Bell.html" %}
-            <p class="ml-5 mr-4 inline-flex items-center gap-x-2">
-               <span>Notifications</span>
-               {% comment %} <span class="px-2 py-1 inline-flex items-center justify-center min-w-8 rounded-full bg-white/75 text-muted-foreground leading-none text-sm">0</span> {% endcomment %}
-            </p>
-         </a>
-      </li>
-
+      {% include "snippets/SidebarItem.html" with path="home" icon="icons/Home.html" label="Home" %}
+      {% include "snippets/SidebarItem.html" with path="home" icon="icons/User.html" label="Profile" %}
       <li>
          <a href="{% url 'home' %}"
             class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
@@ -40,22 +17,8 @@
             </p>
          </a>
       </li>
-
-      <li>
-         <a href="{% url 'home' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/Shop.html" %}
-            <span class="block ml-5 mr-4">Following</span>
-         </a>
-      </li>
-
-      <li>
-         <a href="{% url 'home' %}"
-            class="p-3 inline-flex items-center rounded-full hover:bg-white/50 text-foreground group">
-            {% include "icons/Wishlist.html" %}
-            <span class="block ml-5 mr-4">Wishlist</span>
-         </a>
-      </li>
+      {% include "snippets/SidebarItem.html" with path="home" icon="icons/Shop.html" label="Following" %}
+      {% include "snippets/SidebarItem.html" with path="home" icon="icons/Wishlist.html" label="Wishlist" %}
    </ul>
 
    <div class="px-7 mt-auto">
@@ -79,37 +42,26 @@
 
             <!-- Menu -->
             <ul class="dropdown-menu hidden p-2 absolute inset-x-0 bottom-[calc(100%+0.5rem)] bg-white rounded-lg shadow-card origin-bottom animate-scale-in">
-               <li>
-                  <a href="{% url 'dashboard' %}"
-                     class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
-                     <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/Dashboard.html" %}</div>
-                     <span>Dashboard</span>
-                  </a>
-               </li>
+               {% if user.role == 'ADMIN' or user.role == 'MERCHANT' and user.stores.count > 0 %}
+                  {% include "snippets/DropdownNavItem.html" with path="dashboard" icon="icons/Dashboard.html" label="Dashboard" %}
+               {% elif user.role == 'USER' %}
+                  {% include "snippets/DropdownNavItem.html" with path="address-book" icon="icons/Address.html" label="Address Book" %}
+               {% endif %}
 
-               <li>
-                  <a href="{% url 'address-book' %}"
-                     class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
-                     <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/Address.html" %}</div>
-                     <span>Address Book</span>
-                  </a>
-               </li>
-
-               <li>
-                  <a href="{% url 'become-merchant' %}"
-                     class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
-                     <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/MerchantShop.html" %}</div>
-                     <span>Become a merchant</span>
-                  </a>
-               </li>
-
-               <li>
-                  <a href="{% url 'logout' %}"
-                     class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
-                     <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/Logout.html" %}</div>
-                     <span>Log out</span>
-                  </a>
-               </li>
+               {% if user.role == 'MERCHANT' and user.stores.count > 0 %}
+                  <li>
+                     <a href="{% url 'store' user.stores.first.slug %}"
+                        class="px-2 py-1 w-full inline-flex items-center gap-x-4 hover:bg-accent group rounded-md">
+                        <div class="size-9 flex-center bg-gray-100 rounded-full">{% include "icons/MerchantShop.html" %}</div>
+                        <span>{{ user.stores.first.name }}</span>
+                     </a>
+                  </li>
+               {% elif user.role == 'MERCHANT' %}
+                  {% include "snippets/DropdownNavItem.html" with path="create-store" icon="icons/MerchantShop.html" label="Create store" %}
+               {% elif user.role == 'USER' %}
+                  {% include "snippets/DropdownNavItem.html" with path="become-merchant" icon="icons/MerchantShop.html" label="Become a merchant" %}
+               {% endif %}
+               {% include "snippets/DropdownNavItem.html" with path="logout" icon="icons/Logout.html" label="Log out" %}
             </ul>
          </div>
       {% else %}
