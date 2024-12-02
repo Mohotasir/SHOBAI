@@ -36,6 +36,7 @@ class PostLike(models.Model):
         verbose_name = "Post Like"
         verbose_name_plural = "Post Likes"
         ordering = ["-created_at"]
+        unique_together = ("post", "user")
 
 
 class WishlistItem(models.Model):

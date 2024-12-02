@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from apps.users.decorators import role_required
 from apps.stores.models import Store
 from apps.products.models import Product
-from .models import Post, WishlistItem
+from .models import Post, WishlistItem, PostLike
 
 
 # Create your views here.
@@ -33,6 +33,7 @@ def create_post(request):
     return render(request, "post-form.html", {"products": products})
 
 
+@role_required(["MERCHANT"])
 def edit_post(request, pk):
     store = Store.objects.get(merchant=request.user)
     products = get_products(store)
@@ -52,10 +53,25 @@ def edit_post(request, pk):
     return render(request, "post-form.html", {"post": post, "products": products, "edit": True})
 
 
+@role_required(["MERCHANT"])
 def delete_post(request, pk):
     post = Post.objects.get(pk=pk)
     post.delete()
     return redirect("manage-posts")
+
+
+@login_required
+def toggle_like_post(request, pk):
+    post = Post.objects.get(pk=pk)
+    like, created = PostLike.objects.get_or_create(user=request.user, post=post)
+    if not created:
+        like.delete()
+        if post.total_likes > 0:
+            post.total_likes -= 1
+    else:
+        post.total_likes += 1
+    post.save(update_fields=["total_likes"])
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 @role_required(["MERCHANT"])
