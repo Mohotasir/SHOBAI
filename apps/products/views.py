@@ -1,5 +1,6 @@
 import markdown
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from apps.users.decorators import role_required
 from apps.stores.models import Collection
@@ -10,7 +11,16 @@ from .forms import ProductForm
 # Create your views here.
 def all_products(request):
     products = Product.objects.all()
-    return render(request, "all_products.html", {"products": products})
+    wishlist_products = request.user.wishlist_items.values_list("product_id", flat=True)
+
+    # Handle search query
+    query = request.GET.get("q")
+    if query:
+        products = products.filter(name__icontains=query)
+
+    return render(
+        request, "all_products.html", {"products": products, "wishlist_products": wishlist_products}
+    )
 
 
 def product_details(request, p_id):
@@ -56,7 +66,26 @@ def add_product(request):
     else:
         form = ProductForm(user=request.user)
 
-    return render(request, "add_product.html", {"form": form})
+    return render(request, "product_form.html", {"form": form})
+
+
+@role_required(["MERCHANT"])
+def update_product(request, p_id):
+    p = Product.objects.get(pk=p_id)
+
+    if request.user != p.collection.store.merchant:
+        raise PermissionDenied
+
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=p, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Product updated successfully!")
+            return redirect("manage-inventory")
+
+    form = ProductForm(instance=p, user=request.user)
+    return render(request, "product_form.html", {"form": form, "update": True})
 
 
 def convert_to_markdown_table(textarea_input):
